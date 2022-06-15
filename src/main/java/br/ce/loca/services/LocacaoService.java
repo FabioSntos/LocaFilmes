@@ -11,7 +11,12 @@ import br.ce.loca.utils.DataUtils;
 
 public class LocacaoService {
 	
-	public Locacao alugarFilme(Usuario usuario, Filme filme) {
+	public Locacao alugarFilme(Usuario usuario, Filme filme) throws Exception {
+
+		if(filme.getEstoque() == 0) {
+			throw new Exception("Filme sem estoque");
+		}
+
 		Locacao locacao = new Locacao();
 		locacao.setFilme(filme);
 		locacao.setUsuario(usuario);
@@ -31,10 +36,12 @@ public class LocacaoService {
 
 	public static void main(String[] args) {
 		LocacaoService locacaoService = new LocacaoService();
-		Locacao locacao = locacaoService.alugarFilme(new Usuario("Fabio"), new Filme("nome", 1, 10.00 ));
+		try {
+			Locacao locacao = locacaoService.alugarFilme(new Usuario("Fabio"), new Filme("nome", 1, 10.00 ));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-		System.out.println(DataUtils.isMesmaData(locacao.getDataLocacao(), new Date()));
-		System.out.println(DataUtils.isMesmaData(locacao.getDataRetorno(), DataUtils.obterDataComDiferencaDias(1)));
 
 	}
 }

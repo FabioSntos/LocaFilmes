@@ -4,9 +4,8 @@ import br.ce.loca.entities.Filme;
 import br.ce.loca.entities.Locacao;
 import br.ce.loca.entities.Usuario;
 
-import org.junit.Rule;
+import org.junit.Assert;
 import org.junit.Test;
-import org.junit.rules.ErrorCollector;
 
 import java.util.Date;
 
@@ -17,29 +16,43 @@ import static br.ce.loca.utils.DataUtils.*;
 public class LocacaoServiceTest {
 
     @Test
-    public void verifyLocationMoviesPrice() {
+    public void verifyLocationMoviesPrice() throws Exception {
         LocacaoService locacaoService = new LocacaoService();
-        Filme filme = new Filme("filme 1", 2, 5.00);
-        Locacao locacao = locacaoService.alugarFilme(new Usuario("Fabio"), filme);
+        Filme filme = new Filme("filme 1", 1, 5.00);
 
-        assertThat(locacao.getValor(), is(equalTo(5.00)));
+            Locacao locacao = locacaoService.alugarFilme(new Usuario("Fabio"), filme);
+            assertThat(locacao.getValor(), is(equalTo(5.00)));
+
     }
 
     @Test
-    public void shouldReturnLocationDateEqualNow() {
+    public void shouldNotBeAbleToLocateMovieWithoutInventory(){
         LocacaoService locacaoService = new LocacaoService();
-        Filme filme = new Filme("filme 1", 2, 5.00);
-        Locacao locacao = locacaoService.alugarFilme(new Usuario("Fabio"), filme);
+        Filme filme = new Filme("filme 1", 0, 5.00);
 
-        assertThat(isMesmaData(locacao.getDataLocacao(), new Date()),is(true));
+        try {
+            locacaoService.alugarFilme(new Usuario("Fabio"), filme);
+            Assert.fail("Should not be able to locate movie without inventory");
+        }catch (Exception e) {
+            assertThat(e.getMessage(), is(equalTo("Filme sem estoque")));
+        }
     }
 
     @Test
-    public void shouldBeTrueThatReturnDateIsTomorrow() {
+    public void shouldReturnLocationDateEqualNow() throws Exception {
+        LocacaoService locacaoService = new LocacaoService();
+        Filme filme = new Filme("filme 1", 2, 5.00);
+
+        Locacao locacao = locacaoService.alugarFilme(new Usuario("Fabio"), filme);
+        assertThat(isMesmaData(locacao.getDataLocacao(), new Date()), is(true));
+
+    }
+
+    @Test
+    public void shouldBeTrueThatReturnDateIsTomorrow() throws Exception {
         LocacaoService locacaoService = new LocacaoService();
         Filme filme = new Filme("filme 1", 2, 5.00);
         Locacao locacao = locacaoService.alugarFilme(new Usuario("Fabio"), filme);
-
-        assertThat(isMesmaData(locacao.getDataRetorno(), obterDataComDiferencaDias(1)),is(true));
+        assertThat(isMesmaData(locacao.getDataRetorno(), obterDataComDiferencaDias(1)), is(true));
     }
 }
