@@ -7,6 +7,7 @@ import java.util.Date;
 import br.ce.loca.entities.Filme;
 import br.ce.loca.entities.Locacao;
 import br.ce.loca.entities.Usuario;
+import br.ce.loca.utils.DataUtils;
 
 public class LocacaoService {
 	
@@ -29,6 +30,11 @@ public class LocacaoService {
 	}
 
 	public static void main(String[] args) {
-		
+		LocacaoService locacaoService = new LocacaoService();
+		Locacao locacao = locacaoService.alugarFilme(new Usuario("Fabio"), new Filme("nome", 1, 10.00 ));
+
+		System.out.println(DataUtils.isMesmaData(locacao.getDataLocacao(), new Date()));
+		System.out.println(DataUtils.isMesmaData(locacao.getDataRetorno(), DataUtils.obterDataComDiferencaDias(1)));
+
 	}
 }
