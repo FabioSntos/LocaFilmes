@@ -2,7 +2,9 @@ package br.ce.loca.services;
 
 import static br.ce.loca.utils.DataUtils.adicionarDias;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import br.ce.loca.entities.Filme;
 import br.ce.loca.entities.Locacao;
@@ -12,15 +14,18 @@ import br.ce.loca.utils.DataUtils;
 
 public class LocacaoService {
 	
-	public Locacao alugarFilme(Usuario usuario, Filme filme) throws LocadoraException {
+	public Locacao alugarFilme(Usuario usuario, List<Filme> filme) throws LocadoraException {
 
-		if(filme == null) {
+		if(filme == null || filme.isEmpty()) {
 			throw new LocadoraException("Filme vazio");
 		}
 
-		if(filme.getEstoque() == 0) {
-			throw new LocadoraException("Filme sem estoque");
+		for(Filme filmes: filme) {
+			if(filmes.getEstoque() == 0) {
+				throw new LocadoraException("Filme sem estoque");
+			}
 		}
+
 
 		if(usuario == null) {
 			throw new LocadoraException("Usuario vazio");
@@ -28,10 +33,16 @@ public class LocacaoService {
 
 
 		Locacao locacao = new Locacao();
-		locacao.setFilme(filme);
+
+		Double valorTotal = 0.0;
+		for (Filme filmes : filme) {
+			valorTotal += filmes.getPrecoLocacao();
+		}
+		locacao.setValor(valorTotal);
+		locacao.setFilmes(filme);
+
 		locacao.setUsuario(usuario);
 		locacao.setDataLocacao(new Date());
-		locacao.setValor(filme.getPrecoLocacao());
 
 		//Entrega no dia seguinte
 		Date dataEntrega = new Date();
@@ -47,7 +58,11 @@ public class LocacaoService {
 	public static void main(String[] args) {
 		LocacaoService locacaoService = new LocacaoService();
 		try {
-			Locacao locacao = locacaoService.alugarFilme(new Usuario("Fabio"), new Filme("nome", 1, 10.00 ));
+			Filme filme = new Filme();
+			filme.setEstoque(1);
+			filme.setNome("Filme 1");
+			filme.setPrecoLocacao(10.0);
+			Locacao locacao = locacaoService.alugarFilme(new Usuario("Fabio"), Collections.singletonList(filme));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
