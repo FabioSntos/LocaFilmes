@@ -4,6 +4,7 @@ import br.ce.loca.entities.Filme;
 import br.ce.loca.entities.Locacao;
 import br.ce.loca.entities.Usuario;
 
+import br.ce.loca.exceptions.LocadoraException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -26,19 +27,6 @@ public class LocacaoServiceTest {
     }
 
     @Test
-    public void shouldNotBeAbleToLocateMovieWithoutInventory(){
-        LocacaoService locacaoService = new LocacaoService();
-        Filme filme = new Filme("filme 1", 0, 5.00);
-
-        try {
-            locacaoService.alugarFilme(new Usuario("Fabio"), filme);
-            Assert.fail("Should not be able to locate movie without inventory");
-        }catch (Exception e) {
-            assertThat(e.getMessage(), is(equalTo("Filme sem estoque")));
-        }
-    }
-
-    @Test
     public void shouldReturnLocationDateEqualNow() throws Exception {
         LocacaoService locacaoService = new LocacaoService();
         Filme filme = new Filme("filme 1", 2, 5.00);
@@ -54,5 +42,44 @@ public class LocacaoServiceTest {
         Filme filme = new Filme("filme 1", 2, 5.00);
         Locacao locacao = locacaoService.alugarFilme(new Usuario("Fabio"), filme);
         assertThat(isMesmaData(locacao.getDataRetorno(), obterDataComDiferencaDias(1)), is(true));
+    }
+
+
+    @Test
+    public void shouldNotBeAbleToLocateMovieWithoutInventory(){
+        LocacaoService locacaoService = new LocacaoService();
+        Filme filme = new Filme("filme 1", 0, 5.00);
+
+        try {
+            locacaoService.alugarFilme(new Usuario("Fabio"), filme);
+            Assert.fail();
+        }catch (LocadoraException e) {
+            assertThat(e.getMessage(), is(equalTo("Filme sem estoque")));
+        }
+    }
+
+    @Test
+    public void userCannotBeNull() {
+        LocacaoService locacaoService = new LocacaoService();
+        Filme filme = new Filme("filme 1", 1, 5.00);
+
+        try {
+            locacaoService.alugarFilme(null, filme);
+            Assert.fail();
+        }catch (LocadoraException e) {
+            assertThat(e.getMessage(), is(equalTo("Usuario vazio")));
+        }
+    }
+
+    @Test
+    public void movieCannotBeNull(){
+        LocacaoService locacaoService = new LocacaoService();
+
+        try {
+            locacaoService.alugarFilme(new Usuario("Fabio"), null);
+            Assert.fail();
+        }catch (LocadoraException e) {
+            assertThat(e.getMessage(), is(equalTo("Filme vazio")));
+        }
     }
 }

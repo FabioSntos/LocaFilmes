@@ -7,15 +7,25 @@ import java.util.Date;
 import br.ce.loca.entities.Filme;
 import br.ce.loca.entities.Locacao;
 import br.ce.loca.entities.Usuario;
+import br.ce.loca.exceptions.LocadoraException;
 import br.ce.loca.utils.DataUtils;
 
 public class LocacaoService {
 	
-	public Locacao alugarFilme(Usuario usuario, Filme filme) throws Exception {
+	public Locacao alugarFilme(Usuario usuario, Filme filme) throws LocadoraException {
+
+		if(filme == null) {
+			throw new LocadoraException("Filme vazio");
+		}
 
 		if(filme.getEstoque() == 0) {
-			throw new Exception("Filme sem estoque");
+			throw new LocadoraException("Filme sem estoque");
 		}
+
+		if(usuario == null) {
+			throw new LocadoraException("Usuario vazio");
+		}
+
 
 		Locacao locacao = new Locacao();
 		locacao.setFilme(filme);
