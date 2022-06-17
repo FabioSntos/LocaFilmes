@@ -27,7 +27,7 @@ public class LocacaoServiceTest {
     }
 
     @Test
-    public void verifyLocationMoviesPrice() throws Exception {
+    public void shouldVerifyLocationMoviesPrice() throws LocadoraException {
         List<Filme> filmes = Arrays.asList(
                 new Filme("Filme 1", 2, 10.0),
                 new Filme("Filme 2", 2, 10.0),
@@ -39,7 +39,7 @@ public class LocacaoServiceTest {
     }
 
     @Test
-    public void shouldReturnLocationDateEqualNow() throws Exception {
+    public void shouldReturnLocationDateEqualNow() throws LocadoraException {
         List<Filme> filmes = Arrays.asList(
                 new Filme("Filme 1", 2, 10.0),
                 new Filme("Filme 2", 2, 10.0),
@@ -52,7 +52,7 @@ public class LocacaoServiceTest {
     }
 
     @Test
-    public void shouldBeTrueThatReturnDateIsTomorrow() throws Exception {
+    public void shouldBeTrueThatReturnDateIsTomorrow() throws LocadoraException {
         List<Filme> filmes = Arrays.asList(
                 new Filme("Filme 1", 2, 10.0),
                 new Filme("Filme 2", 2, 10.0),
@@ -78,7 +78,7 @@ public class LocacaoServiceTest {
     }
 
     @Test
-    public void userCannotBeNull() {
+    public void shouldThrowExceptionWhenUserIsNull() {
         List<Filme> filmes = Arrays.asList(
                 new Filme("Filme 1", 2, 10.0),
                 new Filme("Filme 2", 2, 10.0),
@@ -94,7 +94,7 @@ public class LocacaoServiceTest {
     }
 
     @Test
-    public void movieCannotBeNull(){
+    public void shouldThrowExceptionWhenmovieIsNull(){
 
         try {
             locacaoService.alugarFilme(new Usuario("Fabio"), null);
@@ -102,5 +102,79 @@ public class LocacaoServiceTest {
         }catch (LocadoraException e) {
             assertThat(e.getMessage(), is(equalTo("Filme vazio")));
         }
+    }
+
+    @Test
+    public void shouldGive25PDiscountToThe3LocatedMovie()  throws LocadoraException{
+        //cenario
+        Usuario usuario = new Usuario("Fabio");
+        List<Filme> filmes = Arrays.asList(
+                new Filme("Filme 1", 2, 4.0),
+                new Filme("Filme 2", 2, 4.0),
+                new Filme("Filme 3", 2, 4.0)
+        );
+        Locacao locacao = locacaoService.alugarFilme(usuario, filmes);
+
+        //verificacao
+
+       assertThat(locacao.getValor(), is(equalTo(11.00)));
+    }
+
+    @Test
+    public void shouldGive50PDiscountToThe4LocatedMovie()  throws LocadoraException{
+        //cenario
+        Usuario usuario = new Usuario("Fabio");
+        List<Filme> filmes = Arrays.asList(
+                new Filme("Filme 1", 2, 4.0),
+                new Filme("Filme 2", 2, 4.0),
+                new Filme("Filme 3", 2, 4.0),
+                new Filme("Filme 4", 2, 4.0)
+
+        );
+        Locacao locacao = locacaoService.alugarFilme(usuario, filmes);
+
+        //verificacao
+
+        assertThat(locacao.getValor(), is(equalTo(13.00)));
+    }
+    @Test
+    public void shouldGive75PDiscountToThe5LocatedMovie()  throws LocadoraException{
+        //cenario
+        Usuario usuario = new Usuario("Fabio");
+        List<Filme> filmes = Arrays.asList(
+                new Filme("Filme 1", 2, 4.0),
+                new Filme("Filme 2", 2, 4.0),
+                new Filme("Filme 3", 2, 4.0),
+                new Filme("Filme 4", 2, 4.0),
+                new Filme("Filme 5", 2, 4.0)
+
+
+        );
+        Locacao locacao = locacaoService.alugarFilme(usuario, filmes);
+
+        //verificacao
+
+        assertThat(locacao.getValor(), is(equalTo(14.00)));
+    }
+
+    @Test
+    public void shouldGive100PDiscountToThe6LocatedMovie()  throws LocadoraException{
+        //cenario
+        Usuario usuario = new Usuario("Fabio");
+        List<Filme> filmes = Arrays.asList(
+                new Filme("Filme 1", 2, 4.0),
+                new Filme("Filme 2", 2, 4.0),
+                new Filme("Filme 3", 2, 4.0),
+                new Filme("Filme 4", 2, 4.0),
+                new Filme("Filme 5", 2, 4.0),
+                new Filme("Filme 6", 2, 4.0)
+
+
+        );
+        Locacao locacao = locacaoService.alugarFilme(usuario, filmes);
+
+        //verificacao
+
+        assertThat(locacao.getValor(), is(equalTo(14.00)));
     }
 }

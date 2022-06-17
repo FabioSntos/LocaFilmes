@@ -35,8 +35,23 @@ public class LocacaoService {
 		Locacao locacao = new Locacao();
 
 		Double valorTotal = 0.0;
-		for (Filme filmes : filme) {
-			valorTotal += filmes.getPrecoLocacao();
+
+		for(int i = 0; i < filme.size(); i++){
+			Filme filmes = filme.get(i);
+			Double valorFilmes = filmes.getPrecoLocacao();
+
+			switch (i){
+				case 2:
+					valorFilmes = valorFilmes * 0.75; break;
+				case 3:
+					valorFilmes = valorFilmes * 0.50; break;
+
+				case 4:
+					valorFilmes = valorFilmes * 0.25; break;
+				case 5:
+					valorFilmes = 0.0; break;
+			}
+			valorTotal += valorFilmes;
 		}
 		locacao.setValor(valorTotal);
 		locacao.setFilmes(filme);
