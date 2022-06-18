@@ -6,9 +6,8 @@ import br.ce.loca.entities.Usuario;
 
 import br.ce.loca.exceptions.LocadoraException;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import br.ce.loca.utils.DataUtils;
+import org.junit.*;
 
 
 import java.util.*;
@@ -34,11 +33,11 @@ public class LocacaoServiceTest {
                 new Filme("Filme 3", 2, 10.0)
         );
         Locacao locacao = locacaoService.alugarFilme(new Usuario("Fabio"), filmes);
-        assertThat(locacao.getValor(), is(equalTo(30.00)));
+        assertThat(locacao.getValor(), is(equalTo(27.50)));
 
     }
 
-    @Test
+    @Test()
     public void shouldReturnLocationDateEqualNow() throws LocadoraException {
         List<Filme> filmes = Arrays.asList(
                 new Filme("Filme 1", 2, 10.0),
@@ -53,6 +52,7 @@ public class LocacaoServiceTest {
 
     @Test
     public void shouldBeTrueThatReturnDateIsTomorrow() throws LocadoraException {
+        Assume.assumeTrue(DataUtils.verificarDiaSemana(new Date(), Calendar.MONDAY));
         List<Filme> filmes = Arrays.asList(
                 new Filme("Filme 1", 2, 10.0),
                 new Filme("Filme 2", 2, 10.0),
@@ -105,7 +105,7 @@ public class LocacaoServiceTest {
     }
 
     @Test
-    public void shouldGive25PDiscountToThe3LocatedMovie()  throws LocadoraException{
+    public void shouldGive25PDiscountToThe3LocatedMovie() throws LocadoraException {
         //cenario
         Usuario usuario = new Usuario("Fabio");
         List<Filme> filmes = Arrays.asList(
@@ -176,5 +176,18 @@ public class LocacaoServiceTest {
         //verificacao
 
         assertThat(locacao.getValor(), is(equalTo(14.00)));
+    }
+
+    @Test
+    public void shouldNotGiveBackMovieOnSunday() throws LocadoraException {
+        Assume.assumeTrue(DataUtils.verificarDiaSemana(new Date(), Calendar.SATURDAY));
+        Usuario usuario = new Usuario("Fabio");
+        List<Filme> filmes = Arrays.asList(
+                new Filme("Filme 1", 2, 4.0));
+
+        Locacao retorno = locacaoService.alugarFilme(usuario, filmes);
+
+        boolean ehSegunda = DataUtils.verificarDiaSemana(retorno.getDataRetorno(), Calendar.MONDAY);
+        Assert.assertTrue(ehSegunda);
     }
 }

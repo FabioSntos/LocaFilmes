@@ -2,6 +2,7 @@ package br.ce.loca.services;
 
 import static br.ce.loca.utils.DataUtils.adicionarDias;
 
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -62,6 +63,10 @@ public class LocacaoService {
 		//Entrega no dia seguinte
 		Date dataEntrega = new Date();
 		dataEntrega = adicionarDias(dataEntrega, 1);
+		if(DataUtils.verificarDiaSemana(dataEntrega, Calendar.SUNDAY)) {
+			dataEntrega = adicionarDias(dataEntrega, 1);
+		}
+
 		locacao.setDataRetorno(dataEntrega);
 		
 		//Salvando a locacao...	
