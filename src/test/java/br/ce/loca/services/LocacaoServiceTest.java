@@ -6,12 +6,15 @@ import br.ce.loca.entities.Usuario;
 
 import br.ce.loca.exceptions.LocadoraException;
 
+import br.ce.loca.matchers.DiaSemanaMatcher;
+import br.ce.loca.matchers.MatchersProprios;
 import br.ce.loca.utils.DataUtils;
 import org.junit.*;
 
 
 import java.util.*;
 
+import static br.ce.loca.matchers.MatchersProprios.diaSemana;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import static br.ce.loca.utils.DataUtils.*;
@@ -112,8 +115,6 @@ public class LocacaoServiceTest {
                 new Filme("Filme 1", 2, 4.0));
 
         Locacao retorno = locacaoService.alugarFilme(usuario, filmes);
-
-        boolean ehSegunda = DataUtils.verificarDiaSemana(retorno.getDataRetorno(), Calendar.MONDAY);
-        Assert.assertTrue(ehSegunda);
+        assertThat(retorno.getDataRetorno(), diaSemana(Calendar.MONDAY));
     }
 }
